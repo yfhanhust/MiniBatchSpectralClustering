@@ -219,8 +219,7 @@ def PowerMethod(normalized_W,nclass,p):
     return leftU[:,:nclass]
     
     
-#### test with letter-recognition case
-train_data_file = open("mnist.scale",'r')
+train_data_file = open("shuttle.scale",'r')
 train_data_strings = train_data_file.readlines(300000000000)
 train_data_file.close()
 
@@ -228,7 +227,7 @@ train_data = []
 train_label = []
 for i in range(len(train_data_strings)):
     tmp = train_data_strings[i].split(' ')
-    tmpfeature = np.zeros((780,),dtype=float)
+    tmpfeature = np.zeros((9,),dtype=float)
     for k in range(1,len(tmp)):
         if tmp[k] == '\n':
             continue
@@ -244,10 +243,38 @@ for i in range(len(train_data_strings)):
 train_data = np.array(train_data)
 train_label = np.array(train_label)
 
-gamma_value = 0.06#1./float(train_data.shape[1])
+test_data_file = open("shuttle.scale.t",'r')
+test_data_strings = test_data_file.readlines(300000000000)
+test_data_file.close()
+
+test_data = []
+test_label = []
+for i in range(len(test_data_strings)):
+    tmp = test_data_strings[i].split(' ')
+    tmpfeature = np.zeros((9,),dtype=float)
+    for k in range(1,len(tmp)):
+        if tmp[k] == '\n':
+            continue
+
+        single_line = tmp[k].split(':')
+        feaidx = int(single_line[0])
+        feaval = float(single_line[1])
+        tmpfeature[feaidx-1] = feaval
+
+    test_data.append(tmpfeature)
+    test_label.append(float(tmp[0]))
+
+test_data = np.array(test_data)
+test_label = np.array(test_label)
+
+train_data = np.concatenate((train_data,test_data))
+train_label = np.concatenate((train_label,test_label))
+
+print 'nsample: ' + str(train_data.shape[0])
+print 'nclass: ' + str(np.unique(train_label).shape[0])
+
+gamma_value = 5.0
 affinity_matrix = rbf_kernel(train_data,gamma = gamma_value)
-#n_nodes = affinity_matrix.shape[0]
-#affinity_matrix[np.where(affinity_matrix < 0.3)[0]] = 0.
 from sklearn.utils.graph import graph_laplacian
 from sklearn.utils.extmath import _deterministic_vector_sign_flip
 ### calculate laplacian matrix
@@ -258,7 +285,8 @@ nclass = np.unique(train_label).shape[0]
 nsample = train_data.shape[0]
 
 #### Configuring AdaGrad
-master_stepsize = 0.0025#0.0066#2.5
+print 'mini batch size = 100'
+master_stepsize = 0.0025
 outer_iter = 600
 nsampleround = 50
 ncols = 2
@@ -269,7 +297,8 @@ print 'ncols: ' + str(ncols)
 print 'master_stepsize: ' + str(master_stepsize)
 
 nmi_sgd_set = []
-for repeatExp in range(10):
+num_repeat_exp = 10
+for repeatExp in range(num_repeat_exp):
     print 'iteration id: ' + str(repeatExp)
     X = nystromSP(train_data,10,gamma_value,nclass)
     X_sto1,nnz_list,X_sto_list = StochasticRiemannianOpt(laplacian,X,ndim,master_stepsize,auto_corr,outer_iter,ncols,nsampleround)
@@ -285,3 +314,12 @@ for repeatExp in range(10):
     nmi_sgd_set.append(nmi_sgd)
 
 nmi_sgd_set=np.array(nmi_sgd_set)
+nrow = nmi_sgd_set.shape[0]
+ncol = nmi_sgd_set.shape[1]
+records_file = open('sgd_cost_nmi_2_50_60k_ada_warmstart.csv','w')
+for i in range(ncol):
+    tmpstr = ''
+    for j in range(nrow):
+        tmpstr = tmpstr + str(nmi_sgd_set[j][i]) + ' '
+    tmpstr += '\n'
+    records_file.write(tmpstr)
