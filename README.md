@@ -44,3 +44,9 @@ X = nystromSP(train_data,10,gamma_value,nclass)
 ## Note ##
 
 The Nystrom approximation based spectral embedding algorithm is also used as a baseline in the comparative experiments of our paper 
+
+## Shuttle data used in this example code ## 
+
+You can download the shuttle data from https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/multiclass.html#shuttle
+
+We use both training data shuttle.scale and the testing data shuttle.scale.t. We merge them into one single training data matrix for clustering. Due to limit of space, we don't share the data directly in this repo. 
