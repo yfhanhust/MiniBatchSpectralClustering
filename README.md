@@ -12,33 +12,34 @@ The function implements the proposed mini-batch spectral clustering algorithm in
 
 StochasticRiemannianOpt(C,X,ndim,master_stepsize,auto_corr,outer_max_iter,nsamples,nrounds)
 
-*       C                   Symmetric Laplacian matrix generated from pairwise similarity measurements between training data points 
-*       X                   Training data matrix, with each row corresponding to one data point
-*       master_stepsize     Master Stepsize of AdaGrad 
-*       auto_corr           Auto correlation coefficient of AdaGrad
-*       outer_max_iter      The maximum number of iterations for AdaGrad based optimisation
-*       nsamples            The number of columns sampled from the Laplacian matrix C each time 
-*       nrounds             The number of sampling rounds
-*       nsamples * nrounds equals to the size of the mini-batch used for stochastic gradient computation
+*       C:                   Symmetric Laplacian matrix generated from pairwise similarity measurements between training data points 
+*       X:                   Training data matrix, with each row corresponding to one data point
+*       master_stepsize:     Master Stepsize of AdaGrad 
+*       auto_corr:           Auto correlation coefficient of AdaGrad
+*       outer_max_iter:      The maximum number of iterations for AdaGrad based optimisation
+*       nsamples:            The number of columns sampled from the Laplacian matrix C each time 
+*       nrounds:             The number of sampling rounds
+
+nsamples * nrounds equals to the size of the mini-batch used for stochastic gradient computation
 
 The Nystrom approximation based baseline clustering algorithm is also implemented in Python, as you can find here: 
 
 nystromSP(train_data,nsample,sigma,num_clusters)
 
-*       train_data          Training data matix, with each row corresponding to one data point 
-*       nsample             The number of sampled data points from the training data 
-*       gamma_value         Scailing parameter in RBF similarity measurement between data points 
-*       num_clusters        The expected number of clusters, just as K in K-means
+*       train_data:          Training data matix, with each row corresponding to one data point 
+*       nsample:             The number of sampled data points from the training data 
+*       gamma_value:         Scailing parameter in RBF similarity measurement between data points 
+*       num_clusters:        The expected number of clusters, just as K in K-means
 
 ## Example 
 
 X_sto1,nnz_list,X_sto_list = StochasticRiemannianOpt(laplacian,X,ndim,master_stepsize,auto_corr,outer_iter,ncols,nsampleround)
 
-*       X_sto_list          List of spectral embeddings derived from the Laplacian matrix, generated per iteration. 
+*       X_sto_list:          List of spectral embeddings derived from the Laplacian matrix, generated per iteration. 
 
 X = nystromSP(train_data,10,gamma_value,nclass)
 
-*       X                   The approximated spectral embedding derived from the Laplacian matrix 
+*       X:                   The approximated spectral embedding derived from the Laplacian matrix 
 
 ## Note ##
 
