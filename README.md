@@ -38,7 +38,7 @@ X_sto1,nnz_list,X_sto_list = StochasticRiemannianOpt(laplacian,X,ndim,master_ste
 
 X = nystromSP(train_data,10,gamma_value,nclass)
 
-*       X                   Approximated spectral embedding derived from the Laplacian matrix 
+*       X                   The approximated spectral embedding derived from the Laplacian matrix 
 
 ## Note ##
 
